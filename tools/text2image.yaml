@@ -1,0 +1,51 @@
+# 工具描述
+description:
+  human:
+    en_US: Generate high-quality images from text prompts using ModelScope Qwen-Image AI model. Support various image styles and detailed descriptions.
+    zh_CN: 使用 ModelScope Qwen-Image AI 模型从文本提示生成高质量图像。支持各种图像风格和详细描述。
+  llm: This tool generates high-quality images from text descriptions using ModelScope Qwen-Image model. It supports detailed prompts and can create various styles of images.
+
+# 扩展配置
+extra:
+  python:
+    source: tools/text2image.py
+
+# 身份信息
+identity:
+  author: qwen_developer
+  icon: icon.svg
+  label:
+    en_US: Text to Image
+    zh_CN: 文生图
+  name: text2image
+
+# 参数配置
+parameters:
+- form: llm
+  human_description:
+    en_US: The text prompt to generate image from. Describe what you want to see in the image in detail. For example "A golden cat sitting on a red sofa in a cozy living room".
+    zh_CN: 用于生成图像的文本提示。详细描述您希望在图像中看到的内容。例如"一只金色的猫坐在舒适客厅的红色沙发上"。
+  label:
+    en_US: Prompt
+    zh_CN: 提示词
+  llm_description: Text prompt that describes the desired image content in detail. The more specific and descriptive, the better the generated image quality.
+  name: prompt
+  required: true
+  type: string
+  
+- form: form
+  human_description:
+    en_US: The AI model to use for image generation. Qwen-Image is the default and recommended model.
+    zh_CN: 用于图像生成的 AI 模型。Qwen-Image 是默认和推荐的模型。
+  label:
+    en_US: Model
+    zh_CN: 模型
+  name: model
+  type: select
+  options:
+  - label:
+      en_US: Qwen-Image (Recommended)
+      zh_CN: Qwen-Image (推荐)
+    value: "Qwen/Qwen-Image"
+  default: "Qwen/Qwen-Image"
+  required: false

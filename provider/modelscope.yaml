@@ -1,0 +1,37 @@
+# 认证配置
+credentials_for_provider:
+  api_key:
+    help:
+      en_US: Get your ModelScope API key from https://modelscope.cn/my/myaccesstoken. You need to create an account and get the access token.
+      zh_CN: 从 ModelScope 平台获取您的 API Key。您需要创建账户并获取访问令牌。
+    label:
+      en_US: ModelScope API Key
+      zh_CN: ModelScope API Key
+    placeholder:
+      en_US: Please input your ModelScope API Key (ms-xxxxxx)
+      zh_CN: 请输入您的 ModelScope API Key (ms-xxxxxx)
+    required: true
+    type: secret-input
+    url: https://modelscope.cn/my/myaccesstoken
+
+# 扩展配置
+extra:
+  python:
+    source: provider/modelscope_provider.py
+
+# 身份信息
+identity:
+  author: wwwzhouhui
+  description:
+    en_US: ModelScope AI image generation service integration for Qwen-Image model
+    zh_CN: ModelScope AI 图像生成服务集成，支持 Qwen-Image 模型
+  icon: icon.svg
+  label:
+    en_US: ModelScope
+    zh_CN: ModelScope
+  name: modelscope
+  tags: [image]
+
+# 工具列表
+tools:
+- tools/text2image.yaml
