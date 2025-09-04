@@ -1,5 +1,7 @@
 [中文](./README_CN.md) ｜ English
 
+[Project source code address](https://github.com/wwwzhouhui/qwen_text2image)：
+
 # Qwen Text2Image Dify Plugin
 
 ## 📖 Project Overview

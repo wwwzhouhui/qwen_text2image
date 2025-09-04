@@ -1,5 +1,7 @@
 中文 ｜ [English](./README.md)
 
+[项目源码地址](https://github.com/wwwzhouhui/qwen_text2image)：
+
 # Qwen Text2Image Dify 插件
 
 ## 📖 项目简介
