@@ -1,5 +1,5 @@
 # Dify 插件核心依赖
-dify_plugin>=0.1.0,<0.2.0
+dify_plugin>=0.3.0,<0.5.0
 
 # HTTP 请求库
 requests>=2.31.0
