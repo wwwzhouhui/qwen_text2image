@@ -35,3 +35,4 @@ identity:
 # 工具列表
 tools:
 - tools/text2image.yaml
+- tools/image2image.yaml

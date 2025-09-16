@@ -1,6 +1,7 @@
 from typing import Any
 from dify_plugin.errors.tool import ToolProviderCredentialValidationError
 from tools.text2image import Text2ImageTool
+from tools.image2image import Image2ImageTool
 from dify_plugin import ToolProvider
 
 class ModelScopeProvider(ToolProvider):

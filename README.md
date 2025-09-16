@@ -2,15 +2,16 @@
 
 [Project source code address](https://github.com/wwwzhouhui/qwen_text2image)：
 
-# Qwen Text2Image Dify Plugin
+# Qwen Text2Image & Image2Image Dify Plugin
 
 ## 📖 Project Overview
 
-This is a text-to-image Dify plugin based on the ModelScope Qwen-Image model that generates high-quality images from text descriptions. The plugin uses asynchronous task processing to ensure stable and reliable image generation.
+This is a comprehensive Dify plugin based on ModelScope Qwen-Image models that supports both text-to-image generation and image-to-image editing. Generate high-quality images from text descriptions or edit existing images with text prompts. The plugin uses asynchronous task processing to ensure stable and reliable image generation.
 
 ## ✨ Key Features
 
 - 🎨 **High-Quality Image Generation**: Powered by advanced Qwen-Image AI model
+- ✏️ **Image Editing**: Edit existing images with text prompts using Qwen-Image-Edit model
 - ⚡ **Asynchronous Processing**: Uses task submission + polling async mode to avoid timeouts
 - 🔄 **Real-time Feedback**: Provides detailed generation progress and status information
 - 🛡️ **Error Handling**: Comprehensive exception handling with user-friendly error messages
@@ -363,4 +364,16 @@ This project is licensed under the MIT License.
 - [ModelScope Official Website](https://modelscope.cn)
 - [Qwen-Image Model](https://modelscope.cn/models/Qwen/Qwen-Image)
 - [Dify Official Documentation](https://docs.dify.ai)
-- [Plugin Development Standards](../CLAUDE2.md)
+## 📦 Release Notes
+
+### 0.0.2
+- Added Image-to-Image tool (Image2Image) based on ModelScope Qwen-Image-Edit
+- New files: `tools/image2image.py`, `tools/image2image.yaml`
+- Registered the tool in `provider/modelscope.yaml` and imported in `provider/modelscope_provider.py`
+- Updated `manifest.yaml` description and labels to reflect both text-to-image and image-to-image
+- Updated README docs (EN/ZH)
+- Backward compatible; no breaking changes; existing Text2Image workflows are unaffected
+- Usage: In Dify, choose the "Image to Image" tool, then provide a prompt and a public image URL
+
+### 0.0.1
+- Initial release with Text2Image tool based on ModelScope Qwen-Image

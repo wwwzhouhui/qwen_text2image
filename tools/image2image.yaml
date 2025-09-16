@@ -1,0 +1,63 @@
+# 工具描述
+description:
+  human:
+    en_US: Edit and modify existing images based on text prompts using ModelScope Qwen-Image-Edit AI model. Upload an image and describe the changes you want.
+    zh_Hans: 使用 ModelScope Qwen-Image-Edit AI 模型基于文本提示编辑和修改现有图像。上传图像并描述您想要的更改。
+  llm: This tool edits and modifies existing images based on text descriptions using ModelScope Qwen-Image-Edit model. It takes an image URL and a text prompt describing the desired changes.
+
+# 扩展配置
+extra:
+  python:
+    source: tools/image2image.py
+
+# 身份信息
+identity:
+  author: qwen_developer
+  icon: icon.svg
+  label:
+    en_US: Image to Image
+    zh_Hans: 图生图
+  name: image2image
+
+# 参数配置
+parameters:
+- form: llm
+  human_description:
+    en_US: The text prompt describing the changes you want to make to the image. For example "turn the girl's hair blue" or "change the background to a beach scene".
+    zh_Hans: 描述您想要对图像进行的更改的文本提示。例如"把女孩的头发变成蓝色"或"将背景改为海滩场景"。
+  label:
+    en_US: Edit Prompt
+    zh_Hans: 编辑提示词
+  llm_description: Text prompt that describes the specific changes or edits to apply to the input image. Be specific about what elements to modify.
+  name: prompt
+  required: true
+  type: string
+
+- form: llm
+  human_description:
+    en_US: The URL of the image to edit. This should be a publicly accessible image URL (http/https).
+    zh_Hans: 要编辑的图像URL。这应该是一个公开可访问的图像URL（http/https）。
+  label:
+    en_US: Image URL
+    zh_Hans: 图像URL
+  llm_description: The URL of the source image that will be edited according to the prompt. Must be a valid HTTP/HTTPS URL pointing to an image file.
+  name: image_url
+  required: true
+  type: string
+  
+- form: form
+  human_description:
+    en_US: The AI model to use for image editing. Qwen-Image-Edit is specialized for image editing tasks.
+    zh_Hans: 用于图像编辑的 AI 模型。Qwen-Image-Edit 专门用于图像编辑任务。
+  label:
+    en_US: Model
+    zh_Hans: 模型
+  name: model
+  type: select
+  options:
+  - label:
+      en_US: Qwen-Image-Edit (Recommended)
+      zh_Hans: Qwen-Image-Edit (推荐)
+    value: "Qwen/Qwen-Image-Edit"
+  default: "Qwen/Qwen-Image-Edit"
+  required: false

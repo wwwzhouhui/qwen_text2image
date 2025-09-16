@@ -2,15 +2,16 @@
 
 [项目源码地址](https://github.com/wwwzhouhui/qwen_text2image)：
 
-# Qwen Text2Image Dify 插件
+# Qwen Text2Image & Image2Image Dify 插件
 
 ## 📖 项目简介
 
-这是一个基于 ModelScope Qwen-Image 模型的文生图 Dify 插件，能够根据文本描述生成高质量的图像。插件采用异步任务处理模式，确保稳定可靠的图像生成体验。
+这是一个基于 ModelScope Qwen-Image 模型的综合性 Dify 插件，支持文生图和图生图功能。既可以根据文本描述生成高质量图像，也可以使用文本提示编辑现有图像。插件采用异步任务处理模式，确保稳定可靠的图像生成体验。
 
 ## ✨ 功能特点
 
 - 🎨 **高质量图像生成**：基于 Qwen-Image 先进的 AI 模型
+- ✏️ **图像编辑功能**：使用 Qwen-Image-Edit 模型通过文本提示编辑现有图像
 - ⚡ **异步处理**：采用任务提交+轮询的异步模式，避免超时
 - 🔄 **实时反馈**：提供详细的生成进度和状态信息
 - 🛡️ **错误处理**：完善的异常处理和用户友好的错误提示
@@ -415,4 +416,16 @@ GET {image_url}
 - [ModelScope 官网](https://modelscope.cn)
 - [Qwen-Image 模型](https://modelscope.cn/models/Qwen/Qwen-Image)
 - [Dify 官方文档](https://docs.dify.ai)
-- [插件开发规范](../CLAUDE2.md)
+## 📦 版本历史（升级说明）
+
+### 0.0.2
+- 新增图生图工具（Image2Image），基于 ModelScope Qwen-Image-Edit 模型
+- 新增文件：`tools/image2image.py`、`tools/image2image.yaml`
+- 在 `provider/modelscope.yaml` 注册并在 `provider/modelscope_provider.py` 引入该工具
+- 更新 `manifest.yaml` 描述和标签，体现“文生图 + 图生图”
+- 更新中英文 README 文档
+- 向后兼容，无破坏性变更；已有文生图工作流不受影响
+- 使用方式：在 Dify 选择“图生图（Image to Image）”工具，提供提示词和可公开访问的图片 URL
+
+### 0.0.1
+- 首次发布，提供基于 ModelScope Qwen-Image 的文生图工具
