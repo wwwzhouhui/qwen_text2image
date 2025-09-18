@@ -12,6 +12,8 @@ This is a comprehensive Dify plugin based on ModelScope Qwen-Image models that s
 
 - 🎨 **High-Quality Image Generation**: Powered by advanced Qwen-Image AI model
 - ✏️ **Image Editing**: Edit existing images with text prompts using Qwen-Image-Edit model
+- 📐 **Custom Image Size Support**: Flexible image dimensions with custom size configuration (WxH format)
+- 🖼️ **Automatic Size Detection**: Image2Image tool automatically detects input image dimensions as default
 - ⚡ **Asynchronous Processing**: Uses task submission + polling async mode to avoid timeouts
 - 🔄 **Real-time Feedback**: Provides detailed generation progress and status information
 - 🛡️ **Error Handling**: Comprehensive exception handling with user-friendly error messages
@@ -365,6 +367,14 @@ This project is licensed under the MIT License.
 - [Qwen-Image Model](https://modelscope.cn/models/Qwen/Qwen-Image)
 - [Dify Official Documentation](https://docs.dify.ai)
 ## 📦 Release Notes
+
+### 0.0.3
+- **Enhanced Custom Image Size Support**: Both Text2Image and Image2Image tools now support flexible custom image dimensions
+- **Automatic Size Detection**: Image2Image tool automatically detects and uses input image dimensions as default size
+- **Improved Size Validation**: Added comprehensive size format validation with user-friendly error messages
+- **Better Error Handling**: Enhanced error messages for invalid size parameters with automatic fallback
+- **Code Optimization**: Improved parameter handling and validation logic in both tools
+- **Updated Documentation**: Enhanced README with detailed size configuration examples and usage guidelines
 
 ### 0.0.2
 - Added Image-to-Image tool (Image2Image) based on ModelScope Qwen-Image-Edit
