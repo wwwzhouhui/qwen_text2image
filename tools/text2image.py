@@ -1,3 +1,4 @@
+import re
 import requests
 import time
 import json
@@ -30,7 +31,13 @@ class Text2ImageTool(Tool):
         if not prompt:
             yield self.create_text_message("❌ 请输入提示词")
             return
-            
+
+        size = tool_parameters.get("size", "1024x1024")
+        if re.match(r"^\d+x\d+$", size) is None:
+            yield self.create_text_message("❌ 尺寸参数格式错误，请使用 WxH 格式")
+            yield self.create_text_message("💡 使用默认尺寸: 1024x1024")
+            size = "1024x1024"
+
         model = tool_parameters.get("model", "Qwen/Qwen-Image")
         
         # 3. 设置请求头（完全按照 qwen-image.py 的格式）
@@ -51,7 +58,7 @@ class Text2ImageTool(Tool):
                 "model": model,
                 "prompt": prompt,
                 "n": 1,  # 添加生成图片数量参数
-                "size": "1024x1024"  # 添加图片尺寸参数
+                "size": size  # 添加图片尺寸参数
             }
             
             response = requests.post(
