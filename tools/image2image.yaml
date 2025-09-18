@@ -44,6 +44,17 @@ parameters:
   name: image_url
   required: true
   type: string
+
+- form: form
+  human_description:
+    en_US: size of the output image. Default is 1024x1024.
+    zh_Hans: 图像的目标尺寸，默认为 1024x1024
+  label:
+    en_US: Image Size
+    zh_Hans: 图像尺寸
+  name: size
+  required: false
+  type: string
   
 - form: form
   human_description:

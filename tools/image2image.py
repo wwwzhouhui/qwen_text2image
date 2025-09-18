@@ -1,3 +1,4 @@
+import re
 import requests
 import time
 import json
@@ -35,6 +36,20 @@ class Image2ImageTool(Tool):
         if not image_url:
             yield self.create_text_message("❌ 请输入图像URL")
             return
+
+        try:
+            image = Image.open(requests.get(image_url, stream=True).raw)
+            width, height = image.size
+            origin_size = f"{width}x{height}"
+        except Exception as e:
+            yield self.create_text_message("❌ 输入图像URL无效")
+            return
+
+        size = tool_parameters.get("size")
+        if size and re.match(r"^\d+x\d+$", size) is None:
+            yield self.create_text_message("❌ 尺寸参数格式错误，请使用 WxH 格式")
+            yield self.create_text_message(f"💡 使用原图尺寸: {origin_size}")
+            size = origin_size
             
         model = tool_parameters.get("model", "Qwen/Qwen-Image-Edit")
         
@@ -56,6 +71,7 @@ class Image2ImageTool(Tool):
             request_data = {
                 "model": model,
                 "prompt": prompt,
+                "size": size,
                 "image_url": image_url
             }
             
