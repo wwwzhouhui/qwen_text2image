@@ -12,3 +12,4 @@ provider/__pycache__/modelscope_provider.cpython-310.pyc
 tools/.ipynb_checkpoints/image2image-checkpoint.py
 tools/.ipynb_checkpoints/image2image-checkpoint.yaml
 tools/__pycache__/image2image.cpython-310.pyc
+.claude/settings.local.json

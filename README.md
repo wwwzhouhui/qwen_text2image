@@ -10,8 +10,8 @@ This is a comprehensive Dify plugin based on ModelScope Qwen-Image models that s
 
 ## ✨ Key Features
 
-- 🎨 **High-Quality Image Generation**: Powered by advanced Qwen-Image AI model
-- ✏️ **Image Editing**: Edit existing images with text prompts using Qwen-Image-Edit model
+- 🎨 **High-Quality Image Generation**: Supports advanced Qwen-Image-2512 and other models
+- ✏️ **Image Editing**: Edit existing images with text prompts using Qwen-Image-Edit-2511, Qwen-Image-Edit-2509 and other models
 - 📐 **Custom Image Size Support**: Flexible image dimensions with custom size configuration (WxH format)
 - 🖼️ **Automatic Size Detection**: Image2Image tool automatically detects input image dimensions as default
 - ⚡ **Asynchronous Processing**: Uses task submission + polling async mode to avoid timeouts
@@ -367,6 +367,19 @@ This project is licensed under the MIT License.
 - [Qwen-Image Model](https://modelscope.cn/models/Qwen/Qwen-Image)
 - [Dify Official Documentation](https://docs.dify.ai)
 ## 📦 Release Notes
+
+### 0.0.4
+- **Fixed Image2Image Functionality**: Resolved issue where ModelScope server couldn't access Dify internal image URLs causing task failures
+- **Added Temporary Image Hosting**: Integrated litterbox.catbox.moe temporary image hosting service to automatically upload images and obtain publicly accessible URLs
+- **Improved Image Processing**:
+  - Automatically handles RGBA, LA, P and other color modes, converting to RGB format
+  - Supports image URLs from various sources (including Dify internal addresses, intranet addresses, etc.)
+- **Increased Network Timeout**:
+  - API submission request timeout: 300 seconds
+  - Task status polling timeout: 120 seconds
+  - Image hosting upload timeout: 120 seconds
+- **Updated Default Model**: Image2Image default model updated to `Qwen/Qwen-Image-Edit-2511`
+- **Improved Error Handling**: Optimized error message extraction logic, providing more detailed debugging information
 
 ### 0.0.3
 - **Enhanced Custom Image Size Support**: Both Text2Image and Image2Image tools now support flexible custom image dimensions

@@ -8,6 +8,31 @@ from io import BytesIO
 from dify_plugin.entities.tool import ToolInvokeMessage
 from dify_plugin import Tool
 
+
+def upload_to_catbox(image_bytes: bytes, filename: str = "image.png") -> str:
+    """
+    上传图像到 litterbox.catbox.moe（临时图床，1小时后过期）
+    返回公开可访问的 URL
+    """
+    url = "https://litterbox.catbox.moe/resources/internals/api.php"
+    files = {
+        'fileToUpload': (filename, image_bytes, 'image/png')
+    }
+    data = {
+        'reqtype': 'fileupload',
+        'time': '1h'  # 临时存储 1 小时，足够完成图像编辑任务
+    }
+
+    response = requests.post(url, files=files, data=data, timeout=120)
+    response.raise_for_status()
+
+    # 返回的是直接的图片 URL
+    result_url = response.text.strip()
+    if result_url.startswith('http'):
+        return result_url
+    else:
+        raise Exception(f"图床上传失败: {result_url}")
+
 class Image2ImageTool(Tool):
     def _invoke(
         self, tool_parameters: dict
@@ -37,21 +62,45 @@ class Image2ImageTool(Tool):
             yield self.create_text_message("❌ 请输入图像URL")
             return
 
+        # 下载图像并上传到临时图床
+        # 这样可以确保 ModelScope 服务器能够访问图像
         try:
-            image = Image.open(requests.get(image_url, stream=True).raw)
+            image_response = requests.get(image_url, stream=True, timeout=30)
+            image_response.raise_for_status()
+            image = Image.open(BytesIO(image_response.content))
             width, height = image.size
             origin_size = f"{width}x{height}"
+
+            # 将图像转换为 PNG 格式的字节数据
+            # 先确保图像是 RGB 模式（避免 RGBA 等模式的问题）
+            if image.mode in ('RGBA', 'LA', 'P'):
+                background = Image.new('RGB', image.size, (255, 255, 255))
+                if image.mode == 'P':
+                    image = image.convert('RGBA')
+                background.paste(image, mask=image.split()[-1] if image.mode == 'RGBA' else None)
+                image = background
+            elif image.mode != 'RGB':
+                image = image.convert('RGB')
+
+            # 转换为字节数据
+            img_buffer = BytesIO()
+            image.save(img_buffer, format='PNG')
+            image_bytes = img_buffer.getvalue()
+
+        except requests.exceptions.RequestException as e:
+            yield self.create_text_message(f"❌ 无法下载输入图像: {str(e)}")
+            return
         except Exception as e:
-            yield self.create_text_message("❌ 输入图像URL无效")
+            yield self.create_text_message(f"❌ 处理输入图像失败: {str(e)}")
             return
 
         size = tool_parameters.get("size")
         if size and re.match(r"^\d+x\d+$", size) is None:
             yield self.create_text_message("❌ 尺寸参数格式错误，请使用 WxH 格式")
             yield self.create_text_message(f"💡 使用原图尺寸: {origin_size}")
-            size = origin_size
+            size = None # 格式错误时传 None，让 API 自行决定
             
-        model = tool_parameters.get("model", "Qwen/Qwen-Image-Edit")
+        model = tool_parameters.get("model", "Qwen/Qwen-Image-Edit-2511")
         
         # 3. 设置请求头（按照 qwen-image-edit.py 的格式）
         common_headers = {
@@ -61,25 +110,42 @@ class Image2ImageTool(Tool):
         
         try:
             yield self.create_text_message("🚀 正在提交图像编辑任务...")
-            
+
+            # 上传图像到临时图床获取公开 URL
+            yield self.create_text_message("📤 正在上传图像到临时图床...")
+            try:
+                public_image_url = upload_to_catbox(image_bytes, "input_image.png")
+                yield self.create_text_message(f"✅ 图像上传成功")
+            except Exception as upload_err:
+                yield self.create_text_message(f"❌ 图像上传到图床失败: {str(upload_err)}")
+                yield self.create_text_message("💡 提示：请确保网络连接正常，或稍后重试")
+                return
+
             # 添加调试信息
             yield self.create_text_message(f"🔧 使用模型: {model}")
+            if size:
+                yield self.create_text_message(f"🔧 图像尺寸: {size}")
+            else:
+                yield self.create_text_message(f"🔧 图像尺寸: {origin_size} (原图)")
             yield self.create_text_message(f"🔧 提示词长度: {len(prompt)} 字符")
-            yield self.create_text_message(f"🔧 输入图像URL: {image_url[:100]}...")
-            
-            # 4. 提交异步生成任务（完全按照 qwen-image-edit.py 的实现）
+
+            # 4. 提交异步生成任务
+            # 使用公开可访问的图床 URL
             request_data = {
                 "model": model,
                 "prompt": prompt,
-                "size": size,
-                "image_url": image_url
+                "image_url": [public_image_url]  # 使用图床的公开 URL
             }
+            
+            # 仅当用户明确提供了有效的 size 时才发送，避免不兼容的尺寸导致失败
+            if size:
+                request_data["size"] = size
             
             response = requests.post(
                 f"{base_url}v1/images/generations",
                 headers={**common_headers, "X-ModelScope-Async-Mode": "true"},
                 data=json.dumps(request_data, ensure_ascii=False).encode('utf-8'),
-                timeout=30  # 添加超时设置
+                timeout=300  # 增加超时时间到 300 秒
             )
             
             # 检查响应状态
@@ -112,6 +178,7 @@ class Image2ImageTool(Tool):
                 result = requests.get(
                     f"{base_url}v1/tasks/{task_id}",
                     headers={**common_headers, "X-ModelScope-Task-Type": "image_generation"},
+                    timeout=120  # 增加超时时间
                 )
                 
                 result.raise_for_status()
@@ -120,18 +187,37 @@ class Image2ImageTool(Tool):
                 task_status = data.get("task_status")
                 
                 if task_status == "SUCCEED":
-                    # 任务成功，下载图像（按照 qwen-image-edit.py 的处理方式）
+                    # 任务成功，下载图像
+                    # 优先从 output_images 获取，这是最标准的 ModelScope 返回路径
                     output_images = data.get("output_images", [])
-                    if not output_images:
-                        yield self.create_text_message("❌ 编辑成功但未找到图像数据")
+                    image_url_to_download = None
+                    
+                    if output_images and len(output_images) > 0:
+                        image_url_to_download = output_images[0]
+                    else:
+                        # 备选路径：尝试从 DashScope 风格的 output 字段获取
+                        output = data.get("output", {})
+                        results = output.get("results", [])
+                        if results and isinstance(results[0], dict):
+                            image_url_to_download = results[0].get("url")
+                        elif results and isinstance(results[0], str):
+                            image_url_to_download = results[0]
+                    
+                    if not image_url_to_download:
+                        yield self.create_text_message("❌ 编辑成功但未找到图像下载地址")
+                        yield self.create_text_message(f"🔧 完整响应数据: {json.dumps(data, ensure_ascii=False)}")
                         return
                     
-                    image_url = output_images[0]
                     yield self.create_text_message("🎨 图像编辑成功，正在下载...")
                     
-                    # 下载图像（完全按照 qwen-image-edit.py 的方式）
-                    image_response = requests.get(image_url)
-                    image_response.raise_for_status()
+                    # 下载图像
+                    try:
+                        image_response = requests.get(image_url_to_download, timeout=30)
+                        image_response.raise_for_status()
+                    except Exception as download_err:
+                        yield self.create_text_message(f"❌ 下载生成的图片失败: {str(download_err)}")
+                        yield self.create_text_message(f"🔗 图片地址: {image_url_to_download}")
+                        return
                     
                     # 处理图像数据（使用 PIL，与 qwen-image-edit.py 一致）
                     image = Image.open(BytesIO(image_response.content))
@@ -150,9 +236,26 @@ class Image2ImageTool(Tool):
                     return
                     
                 elif task_status == "FAILED":
-                    error_info = data.get("error", {})
-                    error_message = error_info.get("message", "未知错误")
+                    # 尝试从多个位置提取错误信息
+                    error_info = data.get("error") or data.get("errors") or {}
+                    
+                    # 改进：如果 message 是空字符串，则视为无效
+                    def get_valid_msg(info):
+                        if isinstance(info, dict):
+                            msg = info.get("message")
+                            return msg if msg and len(msg.strip()) > 0 else None
+                        return None
+
+                    error_message = (
+                        get_valid_msg(error_info) or 
+                        data.get("message") or 
+                        data.get("task_status_msg") or
+                        "未知错误（API未返回具体错误描述）"
+                    )
+                    
                     yield self.create_text_message(f"❌ 图像编辑失败: {error_message}")
+                    # 添加更多调试信息，帮助用户定位问题
+                    yield self.create_text_message(f"🔧 完整响应数据: {json.dumps(data, ensure_ascii=False)}")
                     return
                 
                 # 继续等待，提供进度反馈

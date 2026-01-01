@@ -58,8 +58,8 @@ parameters:
   
 - form: form
   human_description:
-    en_US: The AI model to use for image editing. Qwen-Image-Edit is specialized for image editing tasks.
-    zh_Hans: 用于图像编辑的 AI 模型。Qwen-Image-Edit 专门用于图像编辑任务。
+    en_US: The AI model to use for image editing. Qwen-Image-Edit-2511 is the latest recommended model.
+    zh_Hans: 用于图像编辑的 AI 模型。Qwen-Image-Edit-2511 是最新推荐的模型。
   label:
     en_US: Model
     zh_Hans: 模型
@@ -67,8 +67,16 @@ parameters:
   type: select
   options:
   - label:
-      en_US: Qwen-Image-Edit (Recommended)
-      zh_Hans: Qwen-Image-Edit (推荐)
+      en_US: Qwen-Image-Edit-2511 (Recommended)
+      zh_Hans: Qwen-Image-Edit-2511 (推荐)
+    value: "Qwen/Qwen-Image-Edit-2511"
+  - label:
+      en_US: Qwen-Image-Edit-2509
+      zh_Hans: Qwen-Image-Edit-2509
+    value: "Qwen/Qwen-Image-Edit-2509"
+  - label:
+      en_US: Qwen-Image-Edit
+      zh_Hans: Qwen-Image-Edit
     value: "Qwen/Qwen-Image-Edit"
-  default: "Qwen/Qwen-Image-Edit"
+  default: "Qwen/Qwen-Image-Edit-2511"
   required: false

@@ -39,7 +39,7 @@ def test_modelscope_api():
     
     # 测试参数
     prompt = "一只可爱的橙色小猫坐在绿色的草地上，背景是蓝天白云"
-    model = "Qwen/Qwen-Image"
+    model = "Qwen/Qwen-Image-2512"
     
     print(f"🎨 测试提示词: {prompt}")
     print(f"🤖 使用模型: {model}")

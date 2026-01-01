@@ -44,10 +44,14 @@ parameters:
   type: select
   options:
   - label:
-      en_US: Qwen-Image (Recommended)
-      zh_Hans: Qwen-Image (推荐)
+      en_US: Qwen-Image-2512 (Recommended)
+      zh_Hans: Qwen-Image-2512 (推荐)
+    value: "Qwen/Qwen-Image-2512"
+  - label:
+      en_US: Qwen-Image
+      zh_Hans: Qwen-Image
     value: "Qwen/Qwen-Image"
-  default: "Qwen/Qwen-Image"
+  default: "Qwen/Qwen-Image-2512"
   required: false
 
 - form: form

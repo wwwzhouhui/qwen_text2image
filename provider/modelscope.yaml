@@ -23,8 +23,8 @@ extra:
 identity:
   author: wwwzhouhui
   description:
-    en_US: ModelScope AI image generation service integration for Qwen-Image model
-    zh_CN: ModelScope AI 图像生成服务集成，支持 Qwen-Image 模型
+    en_US: ModelScope AI image generation service integration for Qwen-Image series models
+    zh_CN: ModelScope AI 图像生成服务集成，支持 Qwen-Image 系列模型
   icon: icon.svg
   label:
     en_US: ModelScope

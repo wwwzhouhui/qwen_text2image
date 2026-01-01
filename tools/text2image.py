@@ -38,7 +38,7 @@ class Text2ImageTool(Tool):
             yield self.create_text_message("💡 使用默认尺寸: 1024x1024")
             size = "1024x1024"
 
-        model = tool_parameters.get("model", "Qwen/Qwen-Image")
+        model = tool_parameters.get("model", "Qwen/Qwen-Image-2512")
         
         # 3. 设置请求头（完全按照 qwen-image.py 的格式）
         common_headers = {
